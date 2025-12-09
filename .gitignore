@@ -1,0 +1,17 @@
+# Ignore system files
+Thumbs.db
+Desktop.ini
+
+# Ignore temporary Power BI files
+*.pbix.lock
+~$*.pbix
+
+# Ignore temp CSV/excel files created by Power BI
+*.tmp
+*.bak
+*.cache
+
+# Ignore backup files
+*.zip
+*.rar
+*.7z
