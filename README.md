@@ -26,7 +26,8 @@ This dashboard was created using:
 - 🔄 **Power Query** — data cleaning, merging, transformations  
 - 🧠 **DAX (Data Analysis Expressions)** — YoY calculations, slope metrics, custom KPIs  
 - 🗂 **Data Modelling** — linking births, deaths, population, DimYear, DimCouncil  
-- 📁 **File Formats** — `.pbix` (report), `.csv` / `.xlsx` (data), `.png` (screenshots)
+- 📁 **File Formats** — `.pbix` (report), `.csv` / `.xlsx` (data), `.png` (screenshots)  
+- 🐍 **Python (pandas, SciPy, Matplotlib)** — age-standardised death rates, confidence intervals and validation checks
 
 ---
 
@@ -40,6 +41,7 @@ This dashboard was created using:
 ✔ Annual Deaths  
 ✔ Total Population  
 ✔ Scotland vs Stirling comparison  
+✔ Deaths by age group and population by single year of age (for age standardisation)  
 
 ### Data Files:
 - `births_timeseries_scotland_1855_2024.xlsx`  
@@ -132,6 +134,36 @@ Reveals Scotland’s shift from **positive** to **negative** natural change afte
 
 #### 📈 Trends & Key Findings (1991–2024)
 ![Trends & Key Findings](./Screenshots/trends_key_findings_1991_2024.png)
+
+---
+
+## 📐 6. Age-Standardised Death Rates
+
+Crude death rates can mislead when comparing areas, or the same area over time, because they depend on how old the population is. This extension calculates **directly age-standardised death rates** so Stirling and Scotland can be compared fairly.
+
+### Method
+- Deaths by 10-year age group (NRS Table DT.07) and mid-year population estimates by single year of age
+- Weighted to the **2013 European Standard Population**, summed into the same 10-year age groups
+- Rates per 100,000 with **95% confidence intervals** (Dobson method)
+- Script: `age_standardised_death_rates.py` → output `Data/age_standardised_death_rates.csv`
+
+### Quality checks
+1. Crude rates match NRS published death rates (Table DT.09) exactly
+2. Stirling's rate relative to Scotland agrees with NRS standardised mortality ratios (Table DT.11) within 1.5 points in every year from 2000 to 2024
+3. Using 10-year age groups instead of the full 5-year standard changes Scotland's rate by 1.1% at most
+
+### Key findings
+- 📉 Scotland's crude death rate fell only **6.5%** from 1991 to 2024, but the age-standardised rate fell **31.8%**: an ageing population hid most of the improvement
+- 📍 Stirling's age-standardised rate was **significantly lower** than Scotland's in **26 of 34 years** (994 vs 1,106 per 100,000 in 2024)
+- 🔍 Standardising widens the gap, because Stirling's population is older than Scotland's
+
+### Limitations
+- Deaths are counted by year of registration, not year of death
+- NRS publishes council deaths only in 10-year age groups
+- 12 deaths with age not stated are excluded
+- Stirling's smaller numbers give wider confidence intervals, so single-year dips (such as 2017) should be read with caution
+
+![Age-Standardised Death Rates](./Screenshots/age_standardised_death_rates.png)
 
 ---
 
